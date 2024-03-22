@@ -1,23 +1,19 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../schemas/user.schema';
 import { Model } from 'mongoose';
+import { DeleteUserCommand } from './delete-user.command';
 import { CommandHandler } from '@nestjs/cqrs';
-import { UpdateUserCommand } from './update-user.command';
 import { NotFoundException } from '@nestjs/common';
 
-@CommandHandler(UpdateUserCommand)
-export class UpdateUserHandler {
+@CommandHandler(DeleteUserCommand)
+export class DeleteUserHandler {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
-  async execute(command: UpdateUserCommand) {
+
+  async execute(command: DeleteUserCommand) {
     const user = await this.userModel.findById(command.id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
-    return await this.userModel.findByIdAndUpdate(
-      command.id,
-      command.updateUserDto,
-      { new: true, upsert: true },
-    );
+    return await this.userModel.findByIdAndDelete(command.id);
   }
 }

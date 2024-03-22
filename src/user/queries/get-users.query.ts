@@ -1,3 +1,6 @@
 export class GetUsersQuery {
-  constructor() {}
+  constructor(
+    public page: number,
+    public limit: number,
+  ) {}
 }

@@ -1,14 +1,24 @@
-import { IsEmail, IsNumber, IsString, Max, Min } from 'class-validator';
+import {
+  IsEmail,
+  IsInt,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class UpdateUserDto {
   @IsString()
-  name: string;
+  @IsOptional()
+  readonly name?: string;
 
   @IsEmail()
-  email: string;
+  @IsOptional()
+  readonly email?: string;
 
+  @IsInt()
   @Min(18)
   @Max(100)
-  @IsNumber()
-  age: number;
+  @IsOptional()
+  readonly age?: number;
 }
