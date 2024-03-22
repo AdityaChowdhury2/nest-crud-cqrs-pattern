@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './schemas/user.schema';
 import { AllCommandHandler } from './commands/_index';
 import { ALLQueriesHandler } from './queries/_index';
+import { UserService } from './user.service';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { ALLQueriesHandler } from './queries/_index';
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
   ],
   controllers: [UserController],
-  providers: [...AllCommandHandler, ...ALLQueriesHandler],
+  providers: [UserService, ...AllCommandHandler, ...ALLQueriesHandler],
 })
 export class UserModule {}

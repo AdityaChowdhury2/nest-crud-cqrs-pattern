@@ -1,19 +1,13 @@
 import { QueryHandler } from '@nestjs/cqrs';
 import { GetUsersQuery } from './get-users.query';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../schemas/user.schema';
-import { Model } from 'mongoose';
+import { UserService } from '../user.service';
 
 @QueryHandler(GetUsersQuery)
-export class GetUserHandler {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+export class GetAllUserHandler {
+  constructor(private readonly userService: UserService) {}
   async execute(query: GetUsersQuery) {
     const { page, limit } = query;
-    console.log(page, limit);
-    return await this.userModel
-      .find()
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .exec();
+
+    return this.userService.getAllUser({ page, limit });
   }
 }

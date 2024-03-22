@@ -1,16 +1,14 @@
 import { QueryHandler } from '@nestjs/cqrs';
 import { GetUserByIdQuery } from './get-user-by-id.query';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../schemas/user.schema';
-import { Model } from 'mongoose';
 import { NotFoundException } from '@nestjs/common';
+import { UserService } from '../user.service';
 
 @QueryHandler(GetUserByIdQuery)
 export class GetUserByIdHandler {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(private readonly userService: UserService) {}
   async execute(query: GetUserByIdQuery) {
     const { id } = query;
-    const user = await this.userModel.findById(id);
+    const user = await this.userService.getUserById(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
