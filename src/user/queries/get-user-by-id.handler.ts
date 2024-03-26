@@ -1,6 +1,6 @@
 import { QueryHandler } from '@nestjs/cqrs';
 import { GetUserByIdQuery } from './get-user-by-id.query';
-import { UserService } from '../user.service';
+import { UserService } from '../entity/user.service';
 
 import { lastValueFrom } from 'rxjs';
 import { User } from '../schemas/user.schema';

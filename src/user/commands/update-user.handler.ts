@@ -1,4 +1,4 @@
-import { UserService } from './../user.service';
+import { UserService } from '../entity/user.service';
 import { CommandHandler } from '@nestjs/cqrs';
 import { UpdateUserCommand } from './update-user.command';
 import { lastValueFrom } from 'rxjs';

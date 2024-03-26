@@ -1,14 +1,19 @@
-import { CommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventPublisher } from '@nestjs/cqrs';
 import { CreateUserCommand } from './create-user.command';
-import { UserService } from '../user.service';
-import { User } from '../schemas/user.schema';
-import { lastValueFrom } from 'rxjs';
+// import { UserService } from '../user.service';
+import { UserAggregateService } from '../aggregates/user-aggregate/user-aggregate.service';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler {
-  constructor(private userService: UserService) {}
+  constructor(
+    private publisher: EventPublisher,
+    private manager: UserAggregateService,
+  ) {}
 
-  execute(command: CreateUserCommand): Promise<User> {
-    return lastValueFrom(this.userService.createUser(command.createUserDto));
+  async execute(command: CreateUserCommand) {
+    const { userPayload } = command;
+    const aggregate = this.publisher.mergeObjectContext(this.manager);
+    await aggregate.createUser(userPayload);
+    aggregate.commit();
   }
 }

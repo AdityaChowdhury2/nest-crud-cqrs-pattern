@@ -4,17 +4,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
+import { UserDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
+import { CreateUserDto } from '../dtos/create-user.dto';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 import { from, map, Observable, switchMap } from 'rxjs';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel('User') private userModel: Model<UserDocument>) {}
 
-  createUser(createUserDto: CreateUserDto): Observable<User> {
+  createUser(createUserDto: CreateUserDto): Observable<UserDocument> {
     /*
   Here's how switchMap works:
     * When a new value is emitted by the source observable, switchMap cancels the previous inner observable (if it exists) and starts a new inner observable based on the emitted value.
@@ -23,6 +23,7 @@ export class UserService {
     return from(this.userModel.findOne({ email: createUserDto.email })).pipe(
       switchMap((user) => {
         if (user) {
+          console.log(user);
           throw new ConflictException('User already exists');
         }
         return from(new this.userModel(createUserDto).save());
@@ -36,7 +37,7 @@ export class UserService {
   }: {
     page?: number;
     limit?: number;
-  }): Observable<User[]> {
+  }): Observable<UserDocument[]> {
     return from(
       this.userModel
         .find()
@@ -53,7 +54,7 @@ export class UserService {
     );
   }
 
-  getUserById(id: string): Observable<User> {
+  getUserById(id: string): Observable<UserDocument> {
     return from(this.userModel.findById(id)).pipe(
       map((user) => {
         if (!user) {
@@ -64,7 +65,10 @@ export class UserService {
     );
   }
 
-  updateUserById(id: string, updateUserDto: UpdateUserDto): Observable<User> {
+  updateUserById(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Observable<UserDocument> {
     return from(this.userModel.findById(id)).pipe(
       switchMap((user) => {
         if (!user) {
@@ -89,7 +93,7 @@ export class UserService {
     );
   }
 
-  deleteUserById(id: string): Observable<User> {
+  deleteUserById(id: string): Observable<UserDocument> {
     return from(this.userModel.findByIdAndDelete(id)).pipe(
       map((user) => {
         if (!user) {
