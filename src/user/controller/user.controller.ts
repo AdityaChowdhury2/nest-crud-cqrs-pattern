@@ -1,6 +1,6 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { CreateUserCommand } from './commands/create-user.command';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserCommand } from '../commands/create-user.command';
+import { CreateUserDto } from '../entity/create-user.dto';
 
 import {
   Body,
@@ -12,11 +12,12 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { UpdateUserCommand } from './commands/update-user.command';
-import { DeleteUserCommand } from './commands/delete-user.command';
-import { GetUsersQuery } from './queries/get-users.query';
-import { GetUserByIdQuery } from './queries/get-user-by-id.query';
-import { UpdateUserDto } from './dtos/update-user.dto';
+import { UpdateUserCommand } from '../commands/update-user.command';
+import { DeleteUserCommand } from '../commands/delete-user.command';
+import { GetUsersQuery } from '../queries/get-users.query';
+import { GetUserByIdQuery } from '../queries/get-user-by-id.query';
+import { UpdateUserDto } from '../entity/update-user.dto';
+import { User } from '../schemas/user.schema';
 
 @Controller('user')
 export class UserController {
@@ -26,11 +27,8 @@ export class UserController {
   ) {}
 
   @Post()
-  async createUser(@Body() user: CreateUserDto) {
-    const { name, email, age } = user;
-    return await this.commandBus.execute(
-      new CreateUserCommand({ name, email, age }),
-    );
+  async createUser(@Body() user: CreateUserDto): Promise<User> {
+    return await this.commandBus.execute(new CreateUserCommand(user));
   }
 
   @Put(':id')

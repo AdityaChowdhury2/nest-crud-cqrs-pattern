@@ -1,6 +1,6 @@
 import { DeleteUserCommand } from './delete-user.command';
 import { CommandHandler } from '@nestjs/cqrs';
-import { UserService } from '../user.service';
+import { UserService } from '../entity/user.service';
 import { User } from '../schemas/user.schema';
 import { lastValueFrom } from 'rxjs';
 

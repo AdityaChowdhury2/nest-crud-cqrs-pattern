@@ -1,4 +1,4 @@
-import { UpdateUserDto } from '../dtos/update-user.dto';
+import { UpdateUserDto } from '../entity/update-user.dto';
 
 export class UpdateUserCommand {
   constructor(

@@ -1,18 +1,22 @@
-import { CqrsModule } from '@nestjs/cqrs';
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from './schemas/user.schema';
+import { UserController } from './controller/user.controller';
 import { AllCommandHandler } from './commands/_index';
 import { ALLQueriesHandler } from './queries/_index';
-import { UserService } from './user.service';
+
+import { UserAggregateManager } from './aggregates/_index';
+import { UserEntitiesModule } from './entity/entity.module';
+import { CqrsModule } from '@nestjs/cqrs';
+import { UserEventManager } from './event/_index';
 
 @Module({
-  imports: [
-    CqrsModule,
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
-  ],
+  imports: [CqrsModule, UserEntitiesModule],
   controllers: [UserController],
-  providers: [UserService, ...AllCommandHandler, ...ALLQueriesHandler],
+  providers: [
+    ...UserAggregateManager,
+    ...UserEventManager,
+    ...AllCommandHandler,
+    ...ALLQueriesHandler,
+  ],
+  exports: [UserEntitiesModule],
 })
 export class UserModule {}

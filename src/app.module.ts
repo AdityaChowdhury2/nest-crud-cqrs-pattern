@@ -12,7 +12,9 @@ import { CqrsModule } from '@nestjs/cqrs';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    MongooseModule.forRoot(process.env.DB_URI, { dbName: 'nest-crud' }),
+    MongooseModule.forRoot(process.env.MONGO_URI, {
+      dbName: process.env.DB_NAME,
+    }),
     CqrsModule,
     UserModule,
   ],
